@@ -1,0 +1,21 @@
+{
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.7",
+    "tailwindcss": "^4.1.7"
+  },
+  "name": "nusavora",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tailwindcss -i static/css/input.css -o static/css/output.css --watch",
+    "build": "npx tailwindcss -i static/css/input.css -o static/css/output.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@material-tailwind/html": "^3.0.0-beta.7"
+  }
+}

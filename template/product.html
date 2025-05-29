@@ -1,0 +1,280 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mx-auto p-5">
+  <h2 class="text-2xl font-bold mb-5">Manage Products</h2>
+
+  <!-- Button to open modal for adding a new product -->
+  <button id="openAddModal" class="mb-10 bg-blue-600 text-white p-2 rounded-md">
+    Add Product
+  </button>
+
+  <!-- Product Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+    {% for product in products %}
+    <div
+      class="flex flex-col items-center justify-center w-full max-w-sm mx-auto"
+    >
+      <div
+        class="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md"
+        style="background-image: url('{{ product.image.url }}')"
+      ></div>
+
+      <div
+        class="w-56 -mt-10 overflow-hidden bg-white rounded-lg shadow-lg md:w-64 dark:bg-gray-800"
+      >
+        <h3
+          class="py-2 font-bold tracking-wide text-center text-gray-800 uppercase dark:text-white"
+        >
+          {{ product.name }} ({{ product.stock }})
+        </h3>
+
+        <div
+          class="flex items-center justify-between px-3 py-2 bg-gray-200 dark:bg-gray-700"
+        >
+          <span class="font-bold text-gray-800 dark:text-gray-200"
+            >Rp {{ product.price|floatformat:0 }}</span
+          >
+          <button
+            class="px-2 py-1 text-xs font-semibold text-white uppercase transition-colors duration-300 transform bg-gray-800 rounded hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none"
+            onclick="openEditModal({{ product.id }}, '{{ product.name }}', {{ product.price }}, {{ product.stock }}, '{{ product.description }}')"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-span-3 text-center text-gray-500 dark:text-gray-400">
+      No products found.
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center mt-10">
+    {% if products.has_previous %}
+    <a
+      href="?page=1"
+      class="px-4 py-2 mx-1 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-gray-200"
+      >First</a
+    >
+    <a
+      href="?page={{ products.previous_page_number }}"
+      class="px-4 py-2 mx-1 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-gray-200"
+      >Previous</a
+    >
+    {% endif %} {% for num in page_range %} {% if products.number == num %}
+    <span class="px-4 py-2 mx-1 text-gray-700 bg-blue-600 rounded-md"
+      >{{ num }}</span
+    >
+    {% else %}
+    <a
+      href="?page={{ num }}"
+      class="px-4 py-2 mx-1 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-gray-200"
+      >{{ num }}</a
+    >
+    {% endif %} {% endfor %} {% if products.has_next %}
+    <a
+      href="?page={{ products.next_page_number }}"
+      class="px-4 py-2 mx-1 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-gray-200"
+      >Next</a
+    >
+    <a
+      href="?page={{ products.paginator.num_pages }}"
+      class="px-4 py-2 mx-1 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-gray-200"
+      >Last</a
+    >
+    {% endif %}
+  </div>
+</div>
+
+<!-- Modal for adding and editing product -->
+<div id="productModal" class="fixed inset-0 z-50 hidden backdrop-blur-sm">
+  <div class="flex justify-center items-center min-h-screen">
+    <div class="relative w-full max-w-3xl mx-auto">
+      <!-- Modal overlay: semi-transparent, uses page background -->
+      <div class="absolute inset-0 bg-gray-900 bg-opacity-60 rounded-lg"></div>
+      <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-8">
+        <h3
+          class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white"
+          id="modalTitle"
+        >
+          Add Product
+        </h3>
+        <form
+          id="productForm"
+          method="POST"
+          action="{% url 'add_product' %}"
+          enctype="multipart/form-data"
+          class="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          {% csrf_token %}
+          <input type="hidden" id="productId" name="product_id" />
+          <!-- Kolom 1 -->
+          <div class="space-y-4">
+            <div>
+              <label
+                for="name"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                >Product Name</label
+              >
+              <input
+                type="text"
+                name="name"
+                id="name"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="price"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                >Price</label
+              >
+              <input
+                type="number"
+                name="price"
+                id="price"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="stock"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                >Stock</label
+              >
+              <input
+                type="number"
+                name="stock"
+                id="stock"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                required
+              />
+            </div>
+          </div>
+          <!-- Kolom 2 -->
+          <div class="space-y-4">
+            <div>
+              <label
+                for="category"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                >Category</label
+              >
+              <input
+                type="text"
+                name="category"
+                id="category"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="description"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                >Description</label
+              >
+              <textarea
+                name="description"
+                id="description"
+                rows="5"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <!-- Kolom 3: Gambar dan Preview -->
+          <div class="flex flex-col items-center space-y-4">
+            <div class="w-full">
+              <label
+                for="image"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                >Product Image</label
+              >
+              <input
+                type="file"
+                name="image"
+                id="image"
+                accept="image/*"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+            <div class="w-full flex flex-col items-center">
+              <span class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+                >Preview:</span
+              >
+              <img
+                id="imagePreview"
+                src=""
+                alt="Preview"
+                class="w-40 h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900"
+                style="display: none"
+              />
+            </div>
+          </div>
+          <div class="md:col-span-3">
+            <button
+              type="submit"
+              class="w-full py-3 mt-2 font-semibold text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition duration-200"
+            >
+              Save Product
+            </button>
+            <button
+              id="closeModal"
+              type="button"
+              class="w-full mt-4 py-2 text-red-500 font-semibold rounded-lg hover:bg-red-50 dark:hover:bg-gray-900 transition duration-200"
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Scripts -->
+<script>
+  // Open modal for adding a product
+  document
+    .getElementById("openAddModal")
+    .addEventListener("click", function () {
+      document.getElementById("modalTitle").innerText = "Add Product";
+      document.getElementById("productForm").action = "{% url 'add_product' %}";
+      document.getElementById("productModal").classList.remove("hidden");
+    });
+
+  // Open modal for editing a product
+  function openEditModal(id, name, price, stock, description) {
+    document.getElementById("modalTitle").innerText = "Edit Product";
+    document.getElementById("productForm").action =
+      "{% url 'edit_product' 0 %}".replace("0", id);
+    document.getElementById("productId").value = id;
+    document.getElementById("name").value = name;
+    document.getElementById("price").value = price;
+    document.getElementById("stock").value = stock;
+    document.getElementById("description").value = description;
+    document.getElementById("productModal").classList.remove("hidden");
+  }
+
+  // Close modal
+  document.getElementById("closeModal").addEventListener("click", function () {
+    document.getElementById("productModal").classList.add("hidden");
+  });
+
+  // Preview image on file input change
+  document.getElementById("image").addEventListener("change", function (event) {
+    const [file] = event.target.files;
+    const preview = document.getElementById("imagePreview");
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    } else {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+  });
+</script>
+{% endblock %}

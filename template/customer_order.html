@@ -1,0 +1,468 @@
+{% extends "base_customer.html" %} {% block content %}
+<!-- Require css -->
+<script src="//unpkg.com/alpinejs" defer></script>
+<nav x-data="{ isOpen: false }" class="sticky top-0 z-40 bg-white shadow">
+  <div
+    class="container px-6 py-4 mx-auto md:flex md:justify-between md:items-center"
+  >
+    <div class="flex items-center justify-between">
+      <a href="#">
+        <img
+          class="w-auto h-6 sm:h-7"
+          src="https://merakiui.com/images/full-logo.svg"
+          alt=""
+        />
+      </a>
+
+      <!-- Mobile menu button -->
+      <div class="flex lg:hidden">
+        <button
+          x-cloak
+          @click="isOpen = !isOpen"
+          type="button"
+          class="text-gray-50 hover:text-gray-600 focus:outline-none focus:text-gray-600 ml-2"
+          aria-label="toggle menu"
+        >
+          <svg
+            x-show="!isOpen"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 8h16M4 16h16"
+            />
+          </svg>
+
+          <svg
+            x-show="isOpen"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
+    <div
+      x-cloak
+      :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']"
+      class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white md:mt-0 md:p-0 md:top-0 md:relative md:bg-transparent md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center"
+    >
+      <div class="flex justify-center md:block px-6">
+        <button
+          type="button"
+          class="relative text-gray-700 transition-colors duration-300 transfor hover:text-gray-600"
+          id="cartDrawerBtn"
+          aria-label="toggle cart drawer"
+        >
+          <svg
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.70711 15.2929C4.07714 15.9229 4.52331 17 5.41421 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM9 19C9 20.1046 8.10457 21 7 21C5.89543 21 5 20.1046 5 19C5 17.8954 5.89543 17 7 17C8.10457 17 9 17.8954 9 19Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          <span
+            class="absolute top-0 left-0 p-1 text-xs text-white bg-blue-500 rounded-full"
+          ></span>
+        </button>
+      </div>
+      <button
+        type="button"
+        class="flex items-center focus:outline-none"
+        aria-label="toggle profile dropdown"
+      >
+        <div
+          class="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
+            class="object-cover w-full h-full"
+            alt="avatar"
+          />
+        </div>
+
+        <h3 class="mx-2 text-gray-70 lg:hidden">Khatab wedaa</h3>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<section class="bg-gray-100 lg:py-12 lg:flex lg:justify-center mb-2" id="hero">
+  <div
+    class="overflow-hidden bg-white lg:mx-8 lg:flex lg:max-w-6xl lg:w-full lg:shadow-md lg:rounded-xl"
+  >
+    <div class="lg:w-1/2">
+      <div
+        class="h-64 bg-cover lg:h-full"
+        style="
+          background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80');
+        "
+      ></div>
+    </div>
+
+    <div class="max-w-xl px-6 py-12 lg:max-w-5xl lg:w-1/2">
+      <h2 class="text-2xl font-semibold text-gray-800 md:text-3xl">
+        Build Your New <span class="text-blue-500">Idea</span>
+      </h2>
+
+      <p class="mt-4 text-gray-500">
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quidem modi
+        reprehenderit vitae exercitationem aliquid dolores ullam temporibus enim
+        expedita aperiam mollitia iure consectetur dicta tenetur, porro
+        consequuntur saepe accusantium consequatur.
+      </p>
+
+      <div class="inline-flex w-full mt-6 sm:w-auto">
+        <a
+          href="#"
+          class="inline-flex items-center justify-center w-full px-6 py-2 text-sm text-white duration-300 bg-gray-800 rounded-lg hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80"
+        >
+          Start Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="categoryBarWrapper" class="relative z-30 px-6">
+  <div
+    id="categoryBar"
+    class="bg-white border-b px-0 py-2 flex gap-2 overflow-x-auto whitespace-nowrap transition-all duration-300 uppercase"
+  >
+    <!-- Kategori akan diisi JS -->
+  </div>
+</div>
+<!-- Drawer Cart Offcanvas -->
+<div
+  id="cartDrawerOverlay"
+  class="fixed inset-0 bg-opacity-40 z-40 hidden transition-opacity duration-300"
+></div>
+<aside
+  id="cartDrawer"
+  class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
+>
+  <div class="flex items-center justify-between p-4 border-b">
+    <h3 class="text-lg font-semibold text-gray-800">🛒 Keranjang Anda</h3>
+    <button
+      id="closeCartDrawer"
+      class="text-gray-500 hover:text-gray-700 text-2xl"
+    >
+      &times;
+    </button>
+  </div>
+  <div id="cartDrawerItems" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+  <div class="p-4 border-t">
+    <div class="flex justify-between items-center mb-4">
+      <span class="font-semibold text-gray-800">Total:</span>
+      <span id="cartDrawerTotal" class="font-bold text-xl text-green-600"
+        >Rp0</span
+      >
+    </div>
+    <button
+      onclick="openCheckoutModal()"
+      class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+    >
+      Checkout
+    </button>
+  </div>
+</aside>
+<!-- Data produk dalam JSON untuk JS -->
+<script type="application/json" id="products-data">
+  [
+  {% for product in products %}
+    {
+      "id": {{ product.id }},
+      "name": "{{ product.name|escapejs }}",
+      "price": {{ product.price|floatformat:0 }},
+      "image": "{{ product.image.url }}",
+      "description": "{{ product.description|escapejs }}",
+      "category": "{{ product.category|default:'Lainnya'|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+  ]
+</script>
+<!-- Section produk per kategori -->
+<div class="container mx-auto px-4 py-6" id="allProductSections"></div>
+<script>
+  // Kategori filter
+  function filterCategory(category) {
+    document.querySelectorAll(".order-card").forEach((card) => {
+      if (
+        category === "all" ||
+        card.getAttribute("data-category") === category
+      ) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+  // Cart logic
+  let cart = [];
+  function addToCart(id, name, price, image) {
+    id = parseInt(id);
+    price = parseInt(price);
+    const idx = cart.findIndex((item) => item.id === id);
+    if (idx > -1) {
+      cart[idx].qty += 1;
+    } else {
+      cart.push({ id, name, price, image, qty: 1 });
+    }
+    renderCart();
+  }
+  function removeFromCart(id) {
+    cart = cart.filter((item) => item.id !== id);
+    renderCart();
+  }
+  function updateQty(id, qty) {
+    const item = cart.find((i) => i.id === id);
+    if (item) {
+      item.qty = Math.max(1, qty);
+      renderCart();
+    }
+  }
+  function incrementQty(id) {
+    const item = cart.find((i) => i.id === id);
+    if (item) {
+      item.qty += 1;
+      renderCart();
+    }
+  }
+  function decrementQty(id) {
+    const item = cart.find((i) => i.id === id);
+    if (item && item.qty > 1) {
+      item.qty -= 1;
+      renderCart();
+    }
+  }
+  function renderCart() {
+    // Hide old sidebar cart
+    const cartItems = document.getElementById("cartItems");
+    if (cartItems) cartItems.innerHTML = "";
+    renderCartDrawer();
+    updateCartNavbarBtn();
+  }
+  // Drawer Cart Logic
+  const cartDrawerBtn = document.getElementById("cartDrawerBtn");
+  const cartDrawer = document.getElementById("cartDrawer");
+  const cartDrawerOverlay = document.getElementById("cartDrawerOverlay");
+  const closeCartDrawer = document.getElementById("closeCartDrawer");
+  function openCartDrawer() {
+    cartDrawer.classList.remove("translate-x-full");
+    cartDrawerOverlay.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+  }
+  function closeCartDrawerFn() {
+    cartDrawer.classList.add("translate-x-full");
+    cartDrawerOverlay.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  }
+  cartDrawerBtn.addEventListener("click", openCartDrawer);
+  closeCartDrawer.addEventListener("click", closeCartDrawerFn);
+  cartDrawerOverlay.addEventListener("click", closeCartDrawerFn);
+
+  // Update cart button in navbar
+  function updateCartNavbarBtn() {
+    const badge = document.getElementById("cartTotalBadge");
+    const icon = document.getElementById("cartIcon");
+    let total = 0;
+    cart.forEach((item) => (total += item.price * item.qty));
+    if (cart.length > 0) {
+      badge.textContent = `Rp${total.toLocaleString()}`;
+      badge.classList.remove("hidden");
+      icon.classList.add("hidden");
+    } else {
+      badge.classList.add("hidden");
+      icon.classList.remove("hidden");
+    }
+  }
+
+  // Render cart in drawer
+  function renderCartDrawer() {
+    const cartItems = document.getElementById("cartDrawerItems");
+    let total = 0;
+    cartItems.innerHTML = "";
+    cart.forEach((item) => {
+      total += item.price * item.qty;
+      cartItems.innerHTML += `
+      <div class="flex items-center gap-3 border-b pb-2">
+        <img src="${item.image}" class="w-12 h-12 object-cover rounded" alt="${
+        item.name
+      }">
+        <div class="flex-1">
+          <div class="font-semibold text-gray-800">${item.name}</div>
+          <div class="text-xs text-gray-500">Rp${item.price.toLocaleString()}</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button onclick="decrementQty(${
+            item.id
+          })" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">-</button>
+          <input type="number" min="1" value="${
+            item.qty
+          }" class="w-12 px-2 py-1 border rounded text-center" onchange="updateQty(${
+        item.id
+      }, this.value)">
+          <button onclick="incrementQty(${
+            item.id
+          })" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
+        </div>
+        <button onclick="removeFromCart(${
+          item.id
+        })" class="text-red-500 hover:text-red-700 ml-2">&times;</button>
+      </div>
+      `;
+    });
+    document.getElementById(
+      "cartDrawerTotal"
+    ).innerText = `Rp${total.toLocaleString()}`;
+  }
+
+  // --- KATEGORI DAN SECTION PER KATEGORI ---
+  // Ambil data produk dan kategori dari template
+  const products = JSON.parse(
+    document.getElementById("products-data").textContent
+  );
+  // Dapatkan semua kategori unik
+  const categories = [...new Set(products.map((p) => p.category))];
+
+  // Render kategori bar
+  const categoryBar = document.getElementById("categoryBar");
+  categoryBar.innerHTML = "";
+  categories.forEach((cat, idx) => {
+    const btn = document.createElement("button");
+    btn.className =
+      "px-4 py-2 rounded-lg font-semibold text-gray-700 hover:bg-blue-100 focus:bg-blue-200 focus:outline-none transition uppercase";
+    btn.textContent = cat;
+    btn.setAttribute("data-category", cat);
+    btn.onclick = function () {
+      document
+        .getElementById("section-" + cat.replace(/\s+/g, "-"))
+        .scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    categoryBar.appendChild(btn);
+  });
+  // Render section produk per kategori
+  const allProductSections = document.getElementById("allProductSections");
+  allProductSections.innerHTML = "";
+  categories.forEach((cat) => {
+    const sectionId = "section-" + cat.replace(/\s+/g, "-");
+    const section = document.createElement("section");
+    section.id = sectionId;
+    section.className = "mb-10";
+    section.innerHTML = `
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 capitalize">${cat}</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        ${products
+          .filter((p) => p.category === cat)
+          .map(
+            (product) => `
+          <div class=\"bg-white rounded-lg shadow-lg overflow-hidden flex flex-col\">
+            <div class=\"px-4 py-2 flex-1\">
+              <h1 class=\"text-lg font-bold text-gray-800 uppercase\">${
+                product.name
+              }</h1>
+              <p class=\"mt-1 text-sm text-gray-600\">${product.description.slice(
+                0,
+                60
+              )}..</p>
+            </div>
+            <img class=\"object-cover w-full h-36 mt-2 rounded-md\" src=\"${
+              product.image
+            }\" alt=\"${product.name}\" />
+            <div class=\"flex items-center justify-between px-4 py-2 bg-gray-900\">
+              <h1 class=\"text-lg font-bold text-white\">Rp ${product.price.toLocaleString()}</h1>
+              <button onclick=\"addToCart('${
+                product.id
+              }', '${product.name.replace(/'/g, "\\'")}', '${
+              product.price
+            }', '${
+              product.image
+            }')\" class=\"px-2 py-1 text-xs font-semibold text-gray-900 uppercase bg-white rounded hover:bg-gray-200 focus:bg-gray-400 transition duration-300\">Tambah</button>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+    allProductSections.appendChild(section);
+  });
+
+  // --- STICKY NAVBAR DAN KATEGORI BAR ---
+  const navbar = document.querySelector("nav");
+  const categoryBarWrapper = document.getElementById("categoryBarWrapper");
+  const hero = document.getElementById("hero");
+  let navPadX = 0;
+  window.addEventListener("DOMContentLoaded", () => {
+    // Samakan padding kiri-kanan categoryBarWrapper dengan navbar utama
+    const navContainer = navbar.querySelector(".container");
+    if (navContainer) {
+      const style = getComputedStyle(navContainer);
+      categoryBarWrapper.style.paddingLeft = style.paddingLeft;
+      categoryBarWrapper.style.paddingRight = style.paddingRight;
+    }
+  });
+  window.addEventListener("scroll", function () {
+    // Navbar selalu sticky (cukup pakai class sticky di nav)
+    // CategoryBarWrapper sticky di bawah navbar setelah discroll melewati hero
+    const navHeight = navbar.offsetHeight;
+    const categoryBarTop = categoryBarWrapper.offsetTop;
+    if (window.scrollY + navHeight >= categoryBarTop) {
+      categoryBarWrapper.classList.add(
+        "fixed",
+        "top-0",
+        "left-0",
+        "right-0",
+        "shadow-md"
+      );
+      categoryBarWrapper.style.zIndex = 39;
+      categoryBarWrapper.style.marginTop = navHeight + "px";
+    } else {
+      categoryBarWrapper.classList.remove(
+        "fixed",
+        "top-0",
+        "left-0",
+        "right-0",
+        "shadow-md"
+      );
+      categoryBarWrapper.style.zIndex = "";
+      categoryBarWrapper.style.marginTop = "";
+    }
+  });
+
+  function openCheckoutModal() {
+    // Simpan cart ke localStorage dan redirect ke halaman checkout baru
+    localStorage.setItem("customer_cart", JSON.stringify(cart));
+    window.location.href = "/customer/checkout/";
+  }
+</script>
+<script
+  src="https://app.sandbox.midtrans.com/snap/snap.js"
+  data-client-key="SB-Mid-client-WqozVbKxVoU3v-9L"
+></script>
+{% endblock %}

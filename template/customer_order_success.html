@@ -1,0 +1,15 @@
+{% extends "base_customer.html" %} {% block content %}
+<div class="container mx-auto max-w-md p-6">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center">
+    <h2 class="text-2xl font-bold mb-4">Order Berhasil!</h2>
+    <div class="mb-4">
+      Terima kasih, pesanan Anda telah diterima.<br />Kode Order:
+      <b>#{{ order.id }}</b>
+    </div>
+    <div class="mb-4">
+      Silakan tunggu pesanan Anda diproses oleh kasir/dapur.
+    </div>
+    <a href="/" class="text-blue-600 underline">Kembali ke Beranda</a>
+  </div>
+</div>
+{% endblock %}
