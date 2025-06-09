@@ -1,50 +1,55 @@
 {% extends "base.html" %} {% block content %}
-<div class="container mx-auto p-5">
-  <h2 class="text-2xl font-bold mb-6">Dashboard Kasir</h2>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="container mx-auto p-5 font-poppins">
+  <h2 class="text-2xl font-bold mb-6 text-primary">Dashboard Kasir</h2>
+
+  <!-- CHART: Pendapatan 2 Kolom x 2 Baris -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-      <div class="text-gray-500">Pendapatan 7 Hari Terakhir</div>
+      <div class="text-secondary">Pendapatan 7 Hari Terakhir</div>
       <canvas id="dailyChart" class="w-full h-32"></canvas>
     </div>
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-      <div class="text-gray-500">Pendapatan 12 Bulan Terakhir</div>
+      <div class="text-secondary">Pendapatan 12 Bulan Terakhir</div>
       <canvas id="monthlyChart" class="w-full h-32"></canvas>
     </div>
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-      <div class="text-gray-500">Pendapatan 5 Tahun Terakhir</div>
+      <div class="text-secondary">Pendapatan 5 Tahun Terakhir</div>
       <canvas id="yearlyChart" class="w-full h-32"></canvas>
     </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-      <div class="text-gray-500 mb-2">Transaksi Cash</div>
-      <div class="text-3xl font-bold text-green-600">{{ cash_count }}</div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-      <div class="text-gray-500 mb-2">Transaksi Midtrans</div>
-      <div class="text-3xl font-bold text-blue-600">{{ midtrans_count }}</div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-      <div class="text-gray-500 mb-2">Produk Terlaris</div>
+      <div class="text-secondary">Produk Terlaris</div>
       <table class="w-full text-sm mt-2">
         <thead>
           <tr>
-            <th class="text-left">Produk</th>
-            <th class="text-right">Qty</th>
+            <th class="text-left text-primary">Produk</th>
+            <th class="text-right text-primary">Qty</th>
           </tr>
         </thead>
         <tbody>
           {% for p in product_ranking %}
           <tr>
-            <td>{{ p.product__name }}</td>
-            <td class="text-right">{{ p.total }}</td>
+            <td class="text-primary">{{ p.product__name }}</td>
+            <td class="text-right text-secondary">{{ p.total }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
+
+  <!-- TRANSAKSI: 2 Kolom x 2 Baris -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+      <div class="text-secondary mb-2">Transaksi Cash</div>
+      <div class="text-3xl font-bold text-accent">{{ cash_count }}</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+      <div class="text-secondary mb-2">Transaksi Midtrans</div>
+      <div class="text-3xl font-bold text-primary">{{ midtrans_count }}</div>
+    </div>
+  </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   // Daily
@@ -55,6 +60,7 @@
     data: { labels: dailyLabels, datasets: [{ label: 'Pendapatan', data: dailyData, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)' }] },
     options: { responsive: true, plugins: { legend: { display: false } } }
   });
+
   // Monthly
   const monthlyLabels = {{ monthly_income|safe }}.map(m => 'Bulan ' + m.month);
   const monthlyData = {{ monthly_income|safe }}.map(m => m.total);
@@ -63,6 +69,7 @@
     data: { labels: monthlyLabels, datasets: [{ label: 'Pendapatan', data: monthlyData, backgroundColor: '#22c55e' }] },
     options: { responsive: true, plugins: { legend: { display: false } } }
   });
+
   // Yearly
   const yearlyLabels = {{ yearly_income|safe }}.map(y => y.year);
   const yearlyData = {{ yearly_income|safe }}.map(y => y.total);

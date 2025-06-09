@@ -1,8 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <div class="container mx-auto p-5">
-  <div
-    class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
-  >
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
     <h2 class="text-2xl font-bold mb-6 text-center">Checkout Order</h2>
     <div class="mb-6">
       <h3 class="text-lg font-semibold mb-2">Order Details</h3>
@@ -50,23 +48,31 @@
 <!-- Modal Konfirmasi Pembayaran Cash -->
 <div
   id="cashConfirmModal"
-  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden transition-opacity duration-300"
 >
   <div
-    class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md"
+    class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md relative animate-fadeInUp flex flex-col"
   >
-    <h3 class="text-lg font-bold mb-4">Konfirmasi Pembayaran Cash</h3>
-    <p class="mb-4">Pastikan pembayaran sudah diterima. Lanjutkan?</p>
-    <div class="flex justify-end gap-2">
+    <!-- Header Modal -->
+    <h3 class="text-lg font-bold text-primary mb-4 text-center">
+      Konfirmasi Pembayaran Cash
+    </h3>
+
+    <p class="mb-6 text-center text-gray-700">
+      Pastikan pembayaran sudah diterima. Lanjutkan?
+    </p>
+
+    <!-- Footer dengan Tombol -->
+    <div class="flex justify-end gap-4">
       <button
         onclick="closeCashModal()"
-        class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-all"
       >
         Batal
       </button>
       <button
         onclick="payCash()"
-        class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+        class="px-4 py-2 rounded-lg bg-secondary text-white hover:bg-green-700 transition-all"
       >
         Konfirmasi
       </button>

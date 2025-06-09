@@ -69,21 +69,33 @@ class Order(models.Model):
         ('qr_scan', 'Customer QR Scan'),
     ]
 
+    PAYMENT_METHOD_CHOICES = [
+        ('cash', 'Cash'),
+        ('midtrans_qris', 'Midtrans QRIS'),
+        ('midtrans_va', 'Midtrans Virtual Account'),
+        ('midtrans_ewallet', 'Midtrans E-Wallet'),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)  # Bisa null jika kasir manual
     kasir = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='kasir_orders')  # Untuk tracking siapa kasirnya
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True, blank=True)  # Bisa kosong jika order tanpa meja
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Processing')
     payment_status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Paid', 'Paid'), ('Cancelled', 'Cancelled')], default='Pending')
     source = models.CharField(max_length=10, choices=ORDER_SOURCE_CHOICES, default='manual')  # Tracking asal order
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='cash')
     notes = models.TextField(blank=True, null=True)  # Catatan khusus untuk order
     phone_number = models.CharField(max_length=15, blank=True, null=True)  # Untuk customer yang pesan via WhatsApp
+    customer_name = models.CharField(max_length=100, blank=True, null=True)  # Nama pelanggan dari sesi WhatsApp
     date_ordered = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order #{self.id} by {self.user.username if self.user else 'Kasir'}"
-
-
+        if self.source == "qr_scan":
+            return f"Order #{self.id} by Customer ({self.phone_number})"
+        elif self.user:
+            return f"Order #{self.id} by {self.user.username}"
+        else:
+            return f"Order #{self.id} by Kasir"
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, related_name='order_details', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

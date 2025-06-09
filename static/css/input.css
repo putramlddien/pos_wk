@@ -1,1 +1,93 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+:root {
+  --color-primary: #052f5f;
+  --color-secondary: #005377;
+  --color-bg: #ffffff;
+  --color-accent: #06a77d;
+  --color-status: #ffffff;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--color-bg);
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+.bg-accent {
+  background-color: var(--color-accent) !important;
+}
+.bg-status {
+  background-color: var(--color-status) !important;
+}
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.text-secondary {
+  color: var(--color-secondary) !important;
+}
+.text-accent {
+  color: var(--color-accent) !important;
+}
+.text-status {
+  color: var(--color-status) !important;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #223052;
+}
+.btn-secondary {
+  background: var(--color-secondary);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+.btn-secondary:hover {
+  background: #d9a100;
+}
+.btn-accent {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+.btn-accent:hover {
+  background: #278a3c;
+}
+.btn-status {
+  background: var(--color-status);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+.btn-status:hover {
+  background: #c22d1a;
+}
+
+/* ...existing code... */

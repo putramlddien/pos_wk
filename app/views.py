@@ -514,12 +514,32 @@ def customer_order(request):
     })
 
 @csrf_exempt
+def customer_update_name(request):
+    if not request.session.get('is_customer_verified'):
+        return JsonResponse({'success': False, 'error': 'Belum login.'}, status=403)
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        name = data.get('name', '').strip()
+        if not name:
+            return JsonResponse({'success': False, 'error': 'Nama tidak boleh kosong.'})
+        request.session['customer_name'] = name
+        return JsonResponse({'success': True, 'name': name})
+    return JsonResponse({'success': False, 'error': 'Invalid request.'}, status=400)
+
+@csrf_exempt
+def customer_logout(request):
+    request.session.flush()
+    return JsonResponse({'success': True})
+
+@csrf_exempt
 def customer_order_checkout(request):
     # Hanya bisa akses jika sudah login dan OTP
     if not request.session.get('is_customer_verified'):
         return JsonResponse({'success': False, 'error': 'Belum login.'}, status=403)
     if request.method == 'POST':
         import json
+        from .models import Table, Order, OrderDetail
         data = json.loads(request.body)
         cart = data.get('cart', [])
         customer_name = request.session.get('customer_name', 'Pelanggan QR')
@@ -527,7 +547,6 @@ def customer_order_checkout(request):
         meja_number = data.get('meja_number', '')
         takeaway = data.get('takeaway', False)
         payment_method = data.get('payment_method', 'midtrans')
-        from .models import Table, Order, OrderDetail
         table = None
         if not takeaway and meja_number:
             table = Table.objects.filter(table_number=meja_number).first()
@@ -535,11 +554,13 @@ def customer_order_checkout(request):
         order = Order.objects.create(
             table=table,
             total_price=sum(int(item['price']) * int(item['qty']) for item in cart),
-            status='Pending',
+            status='Processing',
             payment_status='Pending',
             source='qr_scan',
             notes='',
             phone_number=customer_phone,
+            payment_method=payment_method,
+            customer_name=customer_name,  # Simpan nama customer
         )
         for item in cart:
             OrderDetail.objects.create(
@@ -551,10 +572,51 @@ def customer_order_checkout(request):
         # Payment
         if payment_method == 'cash':
             return JsonResponse({'success': True, 'order_id': order.id})
-        # Midtrans Snap
-        # ... (gunakan kode Snap seperti sebelumnya) ...
-        # (kode Snap tidak diubah, tinggal copy dari sebelumnya)
-        # ...
+        # Midtrans Snap: gunakan logika yang sudah ada (copy dari get_midtrans_token)
+        import requests, base64
+        import json as pyjson
+        url = 'https://app.sandbox.midtrans.com/snap/v1/transactions'
+        server_key = 'SB-Mid-server-kq9bJK9lOejbQFONtGzpVySZ'
+        encoded = base64.b64encode(f"{server_key}:".encode()).decode()
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': f'Basic {encoded}'
+        }
+        items = [
+            {
+                'id': d['id'],
+                'price': int(d['price']),
+                'quantity': int(d['qty']),
+                'name': d['name'] if 'name' in d else 'Produk'
+            } for d in cart
+        ]
+        gross_amount = sum(item['price'] * item['quantity'] for item in items)
+        payload = {
+            'transaction_details': {
+                'order_id': str(order.id),
+                'gross_amount': gross_amount
+            },
+            'item_details': items,
+            'customer_details': {
+                'first_name': customer_name or 'Customer',
+                'phone': customer_phone,
+                'table': table.table_number if table else 'Takeaway',
+            },
+            'enabled_payments': [
+                'gopay', 'qris', 'bank_transfer', 'echannel', 'bca_klikbca',
+                'bca_klikpay', 'bri_epay', 'cimb_clicks', 'danamon_online',
+                'indomaret', 'alfamart', 'akulaku'
+            ],
+        }
+        response = requests.post(url, headers=headers, data=pyjson.dumps(payload))
+        try:
+            snap_token = response.json().get('token')
+        except Exception:
+            snap_token = None
+        if not snap_token:
+            return JsonResponse({'success': False, 'error': response.text}, status=400)
+        return JsonResponse({'success': True, 'order_id': order.id, 'snap_token': snap_token})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 def customer_order_success(request, order_id):
@@ -573,4 +635,53 @@ def customer_checkout(request):
     from .models import Table
     tables = Table.objects.all()
     return render(request, 'customer_checkout.html', {'tables': tables})
+
+from django.views.decorators.http import require_GET
+
+@require_GET
+def customer_order_history(request):
+    # Hanya bisa akses jika sudah login dan OTP
+    if not request.session.get('is_customer_verified'):
+        return JsonResponse({'orders': []})
+    from .models import Order
+    customer_phone = request.session.get('customer_phone', '')
+    orders = Order.objects.filter(phone_number=customer_phone, source='qr_scan').order_by('-date_ordered')
+    data = [
+        {
+            'id': o.id,
+            'status': o.status,
+            'created_at': o.date_ordered.strftime('%d %b %Y %H:%M'),
+            'total_price': int(o.total_price),
+        }
+        for o in orders
+    ]
+    return JsonResponse({'orders': data})
+
+@require_GET
+def customer_order_history_detail(request, order_id):
+    # Hanya bisa akses jika sudah login dan OTP
+    if not request.session.get('is_customer_verified'):
+        return JsonResponse({'order': None})
+    from .models import Order, OrderDetail
+    customer_phone = request.session.get('customer_phone', '')
+    try:
+        order = Order.objects.get(id=order_id, phone_number=customer_phone, source='qr_scan')
+    except Order.DoesNotExist:
+        return JsonResponse({'order': None})
+    items = [
+        {
+            'name': d.product.name,
+            'qty': d.quantity,
+            'price': int(d.price),
+        }
+        for d in order.order_details.all()
+    ]
+    data = {
+        'id': order.id,
+        'status': order.status,
+        'created_at': order.date_ordered.strftime('%d %b %Y %H:%M'),
+        'total_price': int(order.total_price),
+        'items': items,
+    }
+    return JsonResponse({'order': data})
 

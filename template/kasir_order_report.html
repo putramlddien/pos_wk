@@ -1,62 +1,74 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mx-auto p-5">
-  <h2 class="text-2xl font-bold mb-6">Laporan Order Kasir</h2>
+<div class="container mx-auto p-5 font-poppins">
+  <h2 class="text-2xl font-bold mb-6 text-primary">Laporan Order Kasir</h2>
   <form method="get" class="mb-6 grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
     <div>
-      <label class="block text-xs mb-1">Status</label>
-      <select name="status" class="w-full border rounded px-2 py-1">
+      <label class="block text-xs mb-1 text-primary font-semibold">Status</label>
+      <select name="status" class="w-full border border-primary rounded px-2 py-1 focus:border-accent focus:ring-2 focus:ring-accent/30 transition">
         <option value="Completed" {% if status == 'Completed' %}selected{% endif %}>Completed</option>
         <option value="Cancelled" {% if status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
       </select>
     </div>
     <div>
-      <label class="block text-xs mb-1">Periode</label>
-      <select name="period" class="w-full border rounded px-2 py-1">
+      <label class="block text-xs mb-1 text-primary font-semibold">Periode</label>
+      <select name="period" class="w-full border border-primary rounded px-2 py-1 focus:border-accent focus:ring-2 focus:ring-accent/30 transition">
         <option value="day" {% if period == 'day' %}selected{% endif %}>Hari</option>
         <option value="month" {% if period == 'month' %}selected{% endif %}>Bulan</option>
         <option value="year" {% if period == 'year' %}selected{% endif %}>Tahun</option>
       </select>
     </div>
     <div>
-      <label class="block text-xs mb-1">Tanggal</label>
-      <input type="text" name="date" value="{{ date_str }}" placeholder="YYYY-MM-DD / YYYY-MM / YYYY" class="w-full border rounded px-2 py-1" />
+      <label class="block text-xs mb-1 text-primary font-semibold">Tanggal</label>
+      <input type="text" name="date" value="{{ date_str }}" placeholder="YYYY-MM-DD / YYYY-MM / YYYY" class="w-full border border-primary rounded px-2 py-1 focus:border-accent focus:ring-2 focus:ring-accent/30 transition" />
     </div>
     <div>
-      <label class="block text-xs mb-1">Search</label>
-      <input type="text" name="search" value="{{ search }}" placeholder="ID/Customer" class="w-full border rounded px-2 py-1" />
+      <label class="block text-xs mb-1 text-primary font-semibold">Search</label>
+      <input type="text" name="search" value="{{ search }}" placeholder="ID/Customer" class="w-full border border-primary rounded px-2 py-1 focus:border-accent focus:ring-2 focus:ring-accent/30 transition" />
     </div>
     <div>
-      <button class="w-full bg-blue-600 text-white rounded px-4 py-2">Filter</button>
+      <button class="w-full btn-secondary py-2 rounded font-bold text-lg shadow-md transition">Filter</button>
     </div>
   </form>
-  <div class="mb-4 text-lg font-semibold">Total Pendapatan: <span class="text-blue-600">Rp{{ total_income|floatformat:0 }}</span></div>
+  <div class="mb-4 text-lg font-semibold">Total Pendapatan: <span class="text-accent">Rp{{ total_income|floatformat:0 }}</span></div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for order in orders %}
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 cursor-pointer hover:ring-2 hover:ring-blue-400 transition order-card" onclick="openOrderModal({{ order.id }})" id="order-card-{{ order.id }}">
+    <div class="bg-white rounded-xl shadow-lg p-4 cursor-pointer hover:ring-2 hover:ring-accent transition order-card" onclick="openOrderModal({{ order.id }})" id="order-card-{{ order.id }}">
       <div class="mb-2 flex justify-between items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-200">{{ order.notes|default:'-' }}</span>
-        <span class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700">{{ order.table.table_number|default:'Takeaway' }}</span>
+        <span class="font-semibold text-secondary">{{ order.notes|default:'-' }}</span>
+        <span class="text-xs px-2 py-1 rounded bg-secondary text-white">{{ order.table.table_number|default:'Takeaway' }}</span>
       </div>
-      <div class="text-gray-500 text-sm mb-2">Order ID: #{{ order.id }}</div>
-      <div class="font-bold text-lg text-blue-600 mb-2">Rp {{ order.total_price|floatformat:0 }}</div>
-      <div class="text-xs text-gray-400">Kasir: {{ order.kasir.username|default:'-' }}</div>
+      <div class="text-secondary text-sm mb-2">Order ID: #{{ order.id }}</div>
+      <div class="font-bold text-lg text-accent mb-2">Rp {{ order.total_price|floatformat:0 }}</div>
+      <div class="text-xs text-secondary/60">Kasir: {{ order.kasir.username|default:'-' }}</div>
     </div>
     {% empty %}
-    <div class="col-span-3 text-center text-gray-500 dark:text-gray-400">No orders found.</div>
+    <div class="col-span-3 text-center text-primary/60">No orders found.</div>
     {% endfor %}
   </div>
   <!-- Modal Detail Order (reuse dari order_list) -->
-  <div id="orderModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-lg relative">
-      <button onclick="closeOrderModal()" class="absolute top-2 right-2 text-gray-400 hover:text-red-500">&times;</button>
-      <h3 class="text-lg font-bold mb-2">Detail Order</h3>
-      <div id="modalContent"></div>
-      <div class="flex justify-end gap-2 mt-6">
-        <button onclick="closeOrderModal()" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Tutup</button>
-      </div>
+<div id="orderModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden transition-opacity duration-300">
+  <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg relative animate-fadeInUp flex flex-col">
+    
+    <!-- Tombol Close -->
+    <button onclick="closeOrderModal()" class="absolute top-2 right-2 text-secondary hover:text-accent text-2xl transition-all">
+      &times;
+    </button>
+
+    <!-- Header Modal -->
+    <h3 class="text-lg font-bold text-primary mb-4 text-center">Detail Order</h3>
+
+    <!-- Konten Order -->
+    <div id="modalContent"></div>
+
+    <!-- Footer dengan Tombol -->
+    <div class="flex justify-end gap-4 mt-6">
+      <button onclick="closeOrderModal()" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-all">
+        Tutup
+      </button>
     </div>
   </div>
+</div>
 </div>
 <script>
   let currentOrderId = null;

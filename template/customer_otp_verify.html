@@ -1,20 +1,24 @@
 {% extends "base_customer.html" %} {% block content %}
-<div class="container mx-auto max-w-md p-6">
-  <h2 class="text-2xl font-bold mb-4 text-center">Verifikasi OTP</h2>
+<div class="container mx-auto max-w-md p-6 font-poppins">
+  <h2 class="text-2xl font-bold mb-4 text-center text-primary">
+    Verifikasi OTP
+  </h2>
   {% if error %}
-  <div class="mb-3 text-red-600">{{ error }}</div>
+  <div class="mb-3 text-status">{{ error }}</div>
   {% endif %}
   <form method="post">
     {% csrf_token %}
-    <label class="block mb-2">Masukkan OTP</label>
+    <label class="block mb-2 text-primary font-semibold">Masukkan OTP</label>
     <input
       type="text"
       name="otp"
-      class="w-full border rounded px-3 py-2 mb-4"
+      class="w-full border border-primary rounded px-3 py-2 mb-4 focus:border-accent focus:ring-2 focus:ring-accent/30 transition"
       maxlength="6"
       required
     />
-    <button class="w-full bg-green-600 text-white py-2 rounded font-bold">
+    <button
+      class="w-full btn-accent py-2 rounded font-bold text-lg shadow-md transition"
+    >
       Verifikasi
     </button>
   </form>

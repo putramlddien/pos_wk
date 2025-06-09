@@ -1,34 +1,34 @@
 {% extends "base.html" %} {% block content %}
-<div class="container mx-auto p-5">
-  <h2 class="text-2xl font-bold mb-6">Order List (Processing)</h2>
+<div class="container mx-auto p-5 font-poppins">
+  <h2 class="text-2xl font-bold mb-6 text-primary">Order List (Processing)</h2>
   <div
     id="orderGrid"
     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
   >
     {% for order in orders %}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 cursor-pointer hover:ring-2 hover:ring-blue-400 transition order-card"
+      class="bg-white rounded-xl shadow-lg p-4 cursor-pointer hover:ring-2 hover:ring-accent transition order-card"
       onclick="openOrderModal({{ order.id }})"
       id="order-card-{{ order.id }}"
     >
       <div class="mb-2 flex justify-between items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-200"
+        <span class="font-semibold text-secondary"
           >{{ order.notes|default:'-' }}</span
         >
-        <span class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700"
+        <span class="text-xs px-2 py-1 rounded bg-secondary text-white"
           >{{ order.table.table_number|default:'Takeaway' }}</span
         >
       </div>
-      <div class="text-gray-500 text-sm mb-2">Order ID: #{{ order.id }}</div>
-      <div class="font-bold text-lg text-blue-600 mb-2">
+      <div class="text-secondary text-sm mb-2">Order ID: #{{ order.id }}</div>
+      <div class="font-bold text-lg text-accent mb-2">
         Rp {{ order.total_price|floatformat:0 }}
       </div>
-      <div class="text-xs text-gray-400">
+      <div class="text-xs text-primary/60">
         Kasir: {{ order.kasir.username|default:'-' }}
       </div>
     </div>
     {% empty %}
-    <div class="col-span-3 text-center text-gray-500 dark:text-gray-400">
+    <div class="col-span-3 text-center text-primary/60">
       No processing orders.
     </div>
     {% endfor %}
@@ -37,29 +37,36 @@
   <!-- Modal Detail Order -->
   <div
     id="orderModal"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden transition-opacity duration-300"
   >
     <div
-      class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-lg relative"
+      class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg relative animate-fadeInUp flex flex-col"
     >
+      <!-- Tombol Close -->
       <button
         onclick="closeOrderModal()"
-        class="absolute top-2 right-2 text-gray-400 hover:text-red-500"
+        class="absolute top-2 right-2 text-secondary hover:text-accent text-2xl transition-all"
       >
         &times;
       </button>
-      <h3 class="text-lg font-bold mb-2">Detail Order</h3>
+
+      <!-- Header Modal -->
+      <h3 class="text-lg font-bold text-primary mb-4">Detail Order</h3>
+
+      <!-- Konten Order -->
       <div id="modalContent"></div>
-      <div class="flex justify-end gap-2 mt-6">
+
+      <!-- Footer dengan Tombol -->
+      <div class="flex justify-end gap-4 mt-6">
         <button
           onclick="closeOrderModal()"
-          class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+          class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-all"
         >
           Tutup
         </button>
         <button
           id="completeOrderBtn"
-          class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+          class="px-4 py-2 rounded-lg bg-secondary text-white hover:bg-green-700 transition-all"
         >
           Complete Order
         </button>
@@ -69,23 +76,31 @@
   <!-- Modal Konfirmasi Complete -->
   <div
     id="confirmCompleteModal"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden transition-opacity duration-300"
   >
     <div
-      class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md"
+      class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md relative animate-fadeInUp flex flex-col"
     >
-      <h3 class="text-lg font-bold mb-4">Konfirmasi Selesaikan Order</h3>
-      <p class="mb-4">Apakah Anda yakin ingin menyelesaikan pesanan ini?</p>
-      <div class="flex justify-end gap-2">
+      <!-- Header Modal -->
+      <h3 class="text-lg font-bold text-primary mb-4 text-center">
+        Konfirmasi Selesaikan Order
+      </h3>
+
+      <p class="mb-6 text-center text-gray-700">
+        Apakah Anda yakin ingin menyelesaikan pesanan ini?
+      </p>
+
+      <!-- Footer dengan Tombol -->
+      <div class="flex justify-end gap-4">
         <button
           onclick="closeConfirmCompleteModal()"
-          class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+          class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-all"
         >
           Batal
         </button>
         <button
           id="confirmCompleteBtn"
-          class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+          class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-all"
         >
           Konfirmasi
         </button>
@@ -106,7 +121,7 @@
           itemsHtml += `<li class='flex justify-between mb-1'><span>${item.product_name} x${item.quantity}</span><span>Rp${item.price.toLocaleString()}</span></li>`;
         });
         document.getElementById('modalContent').innerHTML = `
-          <div class='mb-2'><b>Customer:</b> ${order.customer}</div>
+          <div class='mb-2'><b>Customer:</b> ${order.customer_name}</div>
           <div class='mb-2'><b>Meja:</b> ${order.table || 'Takeaway'}</div>
           <div class='mb-2'><b>Total:</b> Rp${order.total_price.toLocaleString()}</div>
           <div class='mb-2'><b>Pembayaran:</b> ${order.payment_method}</div>

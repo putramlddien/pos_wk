@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from app.views import dashboard, product_list, add_product, edit_product, delete_product, kasir_owner_login, kasir_owner_logout, order_menu, create_order, order_list, complete_order, kasir_dashboard, kasir_order_report, checkout, pay_cash, get_midtrans_token, midtrans_webhook, qr_list, download_qr, customer_login, customer_otp_verify, customer_order, customer_order_checkout, customer_order_success, customer_checkout
+from app.views import dashboard, product_list, add_product, edit_product, delete_product, kasir_owner_login, kasir_owner_logout, order_menu, create_order, order_list, complete_order, kasir_dashboard, kasir_order_report, checkout, pay_cash, get_midtrans_token, midtrans_webhook, qr_list, download_qr, customer_login, customer_otp_verify, customer_order, customer_order_checkout, customer_order_success, customer_checkout, customer_order_history, customer_order_history_detail, customer_update_name, customer_logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +30,10 @@ urlpatterns = [
     path('customer/order/checkout/', customer_order_checkout, name='customer_order_checkout'),
     path('customer/order-success/<int:order_id>/', customer_order_success, name='customer_order_success'),
     path('customer/checkout/', customer_checkout, name='customer_checkout'),
+    path('customer/order/history/', customer_order_history, name='customer_order_history'),
+    path('customer/order/history/<int:order_id>/', customer_order_history_detail, name='customer_order_history_detail'),
+    path('customer/profile/update-name/', customer_update_name, name='customer_update_name'),
+    path('customer/logout/', customer_logout, name='customer_logout'),
 ]
 
 if settings.DEBUG:

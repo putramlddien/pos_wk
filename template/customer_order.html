@@ -1,7 +1,10 @@
 {% extends "base_customer.html" %} {% block content %}
 <!-- Require css -->
 <script src="//unpkg.com/alpinejs" defer></script>
-<nav x-data="{ isOpen: false }" class="sticky top-0 z-40 bg-white shadow">
+<nav
+  x-data="{ isOpen: false }"
+  class="sticky top-0 z-40 bg-white shadow font-poppins"
+>
   <div
     class="container px-6 py-4 mx-auto md:flex md:justify-between md:items-center"
   >
@@ -20,7 +23,7 @@
           x-cloak
           @click="isOpen = !isOpen"
           type="button"
-          class="text-gray-50 hover:text-gray-600 focus:outline-none focus:text-gray-600 ml-2"
+          class="text-primary hover:text-secondary focus:outline-none focus:text-secondary ml-2"
           aria-label="toggle menu"
         >
           <svg
@@ -60,59 +63,115 @@
 
     <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
     <div
+      :class="isOpen ? 'flex flex-col mt-4 space-y-2' : 'hidden'"
+      class="md:flex md:items-center md:space-x-4 w-full md:w-auto"
       x-cloak
-      :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']"
-      class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white md:mt-0 md:p-0 md:top-0 md:relative md:bg-transparent md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center"
+      x-show="isOpen || window.innerWidth >= 768"
+      @resize.window="if (window.innerWidth >= 768) isOpen = true"
     >
-      <div class="flex justify-center md:block px-6">
-        <button
-          type="button"
-          class="relative text-gray-700 transition-colors duration-300 transfor hover:text-gray-600"
-          id="cartDrawerBtn"
-          aria-label="toggle cart drawer"
-        >
-          <svg
-            class="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.70711 15.2929C4.07714 15.9229 4.52331 17 5.41421 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM9 19C9 20.1046 8.10457 21 7 21C5.89543 21 5 20.1046 5 19C5 17.8954 5.89543 17 7 17C8.10457 17 9 17.8954 9 19Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          <span
-            class="absolute top-0 left-0 p-1 text-xs text-white bg-blue-500 rounded-full"
-          ></span>
-        </button>
-      </div>
+      <!-- Tombol Cart -->
       <button
         type="button"
-        class="flex items-center focus:outline-none"
-        aria-label="toggle profile dropdown"
+        class="flex items-center gap-2 text-primary p-2 hover:text-secondary transition"
+        id="cartDrawerBtn"
+        aria-label="toggle cart drawer"
+      >
+        <span id="cartIcon" class=""
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-6"
+          >
+            <path
+              d="M2.25 2.25a.75.75 0 0 0 0 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 0 0-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 0 0 0-1.5H5.378A2.25 2.25 0 0 1 7.5 15h11.218a.75.75 0 0 0 .674-.421 60.358 60.358 0 0 0 2.96-7.228.75.75 0 0 0-.525-.965A60.864 60.864 0 0 0 5.68 4.509l-.232-.867A1.875 1.875 0 0 0 3.636 2.25H2.25ZM3.75 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM16.5 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
+            /></svg
+        ></span>
+        <span id="cartLabel" class="text-sm font-medium">Keranjang</span>
+      </button>
+
+      <!-- Tombol Riwayat Pesanan -->
+      <button
+        type="button"
+        class="flex items-center gap-2 text-primary p-2 hover:text-secondary transition"
+        id="historyDrawerBtn"
+        aria-label="toggle history drawer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-6"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 0 0 4.25 22.5h15.5a1.875 1.875 0 0 0 1.865-2.071l-1.263-12a1.875 1.875 0 0 0-1.865-1.679H16.5V6a4.5 4.5 0 1 0-9 0ZM12 3a3 3 0 0 0-3 3v.75h6V6a3 3 0 0 0-3-3Zm-3 8.25a3 3 0 1 0 6 0v-.75a.75.75 0 0 1 1.5 0v.75a4.5 4.5 0 1 1-9 0v-.75a.75.75 0 0 1 1.5 0v.75Z"
+            clip-rule="evenodd"
+          /></svg
+        ><span class="text-sm font-medium">Riwayat</span>
+      </button>
+      <!-- Dropdown Profil -->
+      <div class="relative">
+        <button
+          id="profileBtn"
+          type="button"
+          class="flex items-center gap-2 text-primary p-2 hover:text-secondary transition"
+        >
+          <div class="w-8 h-8 overflow-hidden rounded-full">
+            <img
+              src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80"
+              class="object-cover w-full h-full"
+              alt="avatar"
+            />
+          </div>
+        </button>
+      </div>
+      <!-- Modal Profil Customer -->
+      <div
+        id="profileModal"
+        class="fixed inset-0 z-50 hidden bg-black/40 items-center justify-center"
       >
         <div
-          class="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full"
+          class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative animate-fadeInUp"
         >
-          <img
-            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
-            class="object-cover w-full h-full"
-            alt="avatar"
-          />
+          <button
+            onclick="closeProfileModal()"
+            class="absolute top-2 right-2 text-secondary hover:text-accent text-2xl"
+          >
+            &times;
+          </button>
+          <h3 class="text-xl font-bold text-primary mb-4">Profil Pelanggan</h3>
+          <form id="profileForm" class="mb-4">
+            <label class="block mb-2 text-primary font-semibold">Nama</label>
+            <input
+              type="text"
+              id="profileNameInput"
+              class="w-full border border-primary rounded px-3 py-2 mb-4 focus:border-accent focus:ring-2 focus:ring-accent/30 transition"
+              required
+            />
+            <button
+              type="submit"
+              class="w-full btn-primary py-2 rounded font-bold text-lg shadow-md transition"
+            >
+              Simpan Nama
+            </button>
+          </form>
+          <button
+            id="logoutBtn"
+            class="w-full btn-secondary py-2 rounded font-bold text-lg shadow-md transition"
+          >
+            Logout
+          </button>
         </div>
-
-        <h3 class="mx-2 text-gray-70 lg:hidden">Khatab wedaa</h3>
-      </button>
+      </div>
     </div>
   </div>
 </nav>
 
-<section class="bg-gray-100 lg:py-12 lg:flex lg:justify-center mb-2" id="hero">
+<section
+  class="bg-bg lg:py-12 lg:flex lg:justify-center mb-2 font-poppins"
+  id="hero"
+>
   <div
     class="overflow-hidden bg-white lg:mx-8 lg:flex lg:max-w-6xl lg:w-full lg:shadow-md lg:rounded-xl"
   >
@@ -120,27 +179,26 @@
       <div
         class="h-64 bg-cover lg:h-full"
         style="
-          background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80');
+          background-image: url('https://plus.unsplash.com/premium_photo-1663932464937-e677ddfc1d55?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         "
       ></div>
     </div>
 
     <div class="max-w-xl px-6 py-12 lg:max-w-5xl lg:w-1/2">
-      <h2 class="text-2xl font-semibold text-gray-800 md:text-3xl">
-        Build Your New <span class="text-blue-500">Idea</span>
+      <h2 class="text-2xl font-semibold text-primary md:text-3xl">
+        Ngopi Lebih Mudah, Tinggal Scan &
+        <span class="text-secondary">Pesan</span>
       </h2>
 
-      <p class="mt-4 text-gray-500">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quidem modi
-        reprehenderit vitae exercitationem aliquid dolores ullam temporibus enim
-        expedita aperiam mollitia iure consectetur dicta tenetur, porro
-        consequuntur saepe accusantium consequatur.
+      <p class="mt-4 text-secondary/80">
+        "Nikmati pengalaman warkop tanpa ribet! Pilih menu favoritmu, pesan
+        langsung dari meja, dan biarkan kopi datang ke kamu."
       </p>
 
       <div class="inline-flex w-full mt-6 sm:w-auto">
         <a
           href="#"
-          class="inline-flex items-center justify-center w-full px-6 py-2 text-sm text-white duration-300 bg-gray-800 rounded-lg hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80"
+          class="inline-flex items-center justify-center w-full px-6 py-2 text-sm text-white duration-300 bg-secondary rounded-lg hover:bg-secondary focus:ring focus:ring-accent/30 focus:ring-opacity-80"
         >
           Start Now
         </a>
@@ -149,48 +207,100 @@
   </div>
 </section>
 
-<div id="categoryBarWrapper" class="relative z-30 px-6">
+<div id="categoryBarWrapper" class="relative z-30 px-6 font-poppins">
   <div
     id="categoryBar"
-    class="bg-white border-b px-0 py-2 flex gap-2 overflow-x-auto whitespace-nowrap transition-all duration-300 uppercase"
+    class="bg-white border-b border-primary px-0 py-2 flex gap-2 overflow-x-auto whitespace-nowrap transition-all duration-300 uppercase"
   >
     <!-- Kategori akan diisi JS -->
   </div>
 </div>
 <!-- Drawer Cart Offcanvas -->
+<!-- Overlay -->
 <div
   id="cartDrawerOverlay"
-  class="fixed inset-0 bg-opacity-40 z-40 hidden transition-opacity duration-300"
+  class="fixed inset-0 bg-primary/40 z-40 hidden transition-opacity duration-300"
 ></div>
+
+<!-- Drawer Cart -->
 <aside
   id="cartDrawer"
-  class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
+  class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col font-poppins"
 >
-  <div class="flex items-center justify-between p-4 border-b">
-    <h3 class="text-lg font-semibold text-gray-800">🛒 Keranjang Anda</h3>
+  <!-- Header -->
+  <div class="flex items-center justify-between p-5 border-b border-primary/20">
+    <h3 class="text-lg font-semibold text-primary">Keranjang Anda</h3>
     <button
       id="closeCartDrawer"
-      class="text-gray-500 hover:text-gray-700 text-2xl"
+      class="text-secondary hover:text-accent text-2xl transition-all duration-200"
     >
       &times;
     </button>
   </div>
-  <div id="cartDrawerItems" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-  <div class="p-4 border-t">
-    <div class="flex justify-between items-center mb-4">
-      <span class="font-semibold text-gray-800">Total:</span>
-      <span id="cartDrawerTotal" class="font-bold text-xl text-green-600"
+
+  <!-- Item Cart -->
+  <div id="cartDrawerItems" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+
+  <!-- Footer -->
+  <div class="p-5 border-t border-primary/20">
+    <div class="flex justify-between items-center mb-4 text-lg">
+      <span class="font-semibold text-primary">Total:</span>
+      <span id="cartDrawerTotal" class="font-bold text-xl text-primary"
         >Rp0</span
       >
     </div>
     <button
       onclick="openCheckoutModal()"
-      class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+      class="w-full bg-primary text-white py-3 rounded-lg font-bold text-lg shadow-md hover:bg-secondary transition-all duration-300 ease-in-out"
     >
       Checkout
     </button>
   </div>
 </aside>
+<!-- Drawer History Offcanvas -->
+<div
+  id="historyDrawerOverlay"
+  class="fixed inset-0 bg-primary/40 z-40 hidden transition-opacity duration-300"
+></div>
+<aside
+  id="historyDrawer"
+  class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 flex flex-col font-poppins"
+>
+  <div class="flex items-center justify-between p-4 border-b border-primary/20">
+    <h3 class="text-lg font-semibold text-primary">Riwayat Pesanan</h3>
+    <button
+      id="closeHistoryDrawer"
+      class="text-secondary hover:text-accent text-2xl"
+    >
+      &times;
+    </button>
+  </div>
+  <div
+    id="historyDrawerItems"
+    class="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-primary/90"
+  >
+    <div class="text-center text-gray-400" id="historyLoading">
+      Memuat riwayat...
+    </div>
+  </div>
+</aside>
+<!-- Modal Order Detail -->
+<div
+  id="orderDetailModal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden transition-opacity duration-300"
+>
+  <div
+    class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg relative animate-fadeInUp flex flex-col"
+  >
+    <button
+      onclick="closeOrderDetailModal()"
+      class="absolute top-2 right-2 text-secondary hover:text-accent text-2xl"
+    >
+      &times;
+    </button>
+    <div id="orderDetailContent"></div>
+  </div>
+</div>
 <!-- Data produk dalam JSON untuk JS -->
 <script type="application/json" id="products-data">
   [
@@ -266,6 +376,7 @@
     if (cartItems) cartItems.innerHTML = "";
     renderCartDrawer();
     updateCartNavbarBtn();
+    renderQtyBadges();
   }
   // Drawer Cart Logic
   const cartDrawerBtn = document.getElementById("cartDrawerBtn");
@@ -286,57 +397,95 @@
   closeCartDrawer.addEventListener("click", closeCartDrawerFn);
   cartDrawerOverlay.addEventListener("click", closeCartDrawerFn);
 
-  // Update cart button in navbar
+  // Tambahkan badge qty pada setiap card produk setelah gambar produk
+  document.querySelectorAll(".order-card").forEach((card) => {
+    const productId = card.getAttribute("data-id");
+    if (!card.querySelector(".qty-badge")) {
+      const badge = document.createElement("span");
+      badge.className = "qty-badge hidden";
+      badge.id = `qty-badge-${productId}`;
+      badge.style =
+        "position:absolute;top:8px;right:8px;background:red;color:#fff;padding:2px 8px;border-radius:9999px;font-size:0.8rem;font-weight:bold;z-index:10;";
+      card.style.position = "relative";
+      card.appendChild(badge);
+    }
+  });
+
+  function renderQtyBadges() {
+    cart.forEach((item) => {
+      const badge = document.getElementById(`qty-badge-${item.id}`);
+      if (badge) {
+        badge.textContent = item.qty;
+        badge.classList.remove("hidden");
+      }
+    });
+    // Sembunyikan badge jika qty 0 atau tidak ada di cart
+    document.querySelectorAll(".qty-badge").forEach((badge) => {
+      const id = badge.id.replace("qty-badge-", "");
+      const item = cart.find((i) => i.id == id);
+      if (!item || item.qty < 1) badge.classList.add("hidden");
+    });
+  }
+
+  // Update cart button in navbar (total harga)
   function updateCartNavbarBtn() {
-    const badge = document.getElementById("cartTotalBadge");
-    const icon = document.getElementById("cartIcon");
+    const label = document.getElementById("cartLabel");
     let total = 0;
     cart.forEach((item) => (total += item.price * item.qty));
     if (cart.length > 0) {
-      badge.textContent = `Rp${total.toLocaleString()}`;
-      badge.classList.remove("hidden");
-      icon.classList.add("hidden");
+      label.textContent = `Rp${total.toLocaleString()}`;
     } else {
-      badge.classList.add("hidden");
-      icon.classList.remove("hidden");
+      label.textContent = "Keranjang";
     }
   }
+
+  // Panggil renderQtyBadges dan updateCartNavbarBtn setiap perubahan cart
+  document.addEventListener("DOMContentLoaded", function () {
+    renderQtyBadges();
+    updateCartNavbarBtn();
+  });
 
   // Render cart in drawer
   function renderCartDrawer() {
     const cartItems = document.getElementById("cartDrawerItems");
     let total = 0;
     cartItems.innerHTML = "";
+
     cart.forEach((item) => {
       total += item.price * item.qty;
       cartItems.innerHTML += `
-      <div class="flex items-center gap-3 border-b pb-2">
-        <img src="${item.image}" class="w-12 h-12 object-cover rounded" alt="${
+        <div class="flex items-center gap-4 border-b pb-4">
+            <!-- Gambar Produk -->
+            <img src="${
+              item.image
+            }" class="w-20 h-16 object-cover rounded shadow-md" alt="${
         item.name
       }">
-        <div class="flex-1">
-          <div class="font-semibold text-gray-800">${item.name}</div>
-          <div class="text-xs text-gray-500">Rp${item.price.toLocaleString()}</div>
-        </div>
-        <div class="flex items-center gap-1">
-          <button onclick="decrementQty(${
-            item.id
-          })" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">-</button>
-          <input type="number" min="1" value="${
-            item.qty
-          }" class="w-12 px-2 py-1 border rounded text-center" onchange="updateQty(${
-        item.id
-      }, this.value)">
-          <button onclick="incrementQty(${
-            item.id
-          })" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
-        </div>
-        <button onclick="removeFromCart(${
-          item.id
-        })" class="text-red-500 hover:text-red-700 ml-2">&times;</button>
-      </div>
-      `;
+
+            <!-- Detail Produk -->
+            <div class="flex-1">
+                <div class="font-semibold text-black">${item.name}</div>
+                <div class="text-xs text-gray-500">Rp${item.price.toLocaleString()}</div>
+            </div>
+
+            <!-- Kontrol Qty -->
+            <div class="flex items-center gap-2">
+                <button onclick="decrementQty(${item.id})"
+                        class="px-3 py-1 text-black bg-gray-200 rounded hover:bg-gray-300 transition-all duration-200">-</button>
+                <input type="number" min="1" value="${item.qty}"
+                       class="w-12 px-2 py-1 border rounded text-center shadow-sm"
+                       onchange="updateQty(${item.id}, this.value)">
+                <button onclick="incrementQty(${item.id})"
+                        class="px-3 py-1 text-black bg-gray-200 rounded hover:bg-gray-300 transition-all duration-200">+</button>
+            </div>
+
+            <!-- Hapus Produk -->
+            <button onclick="removeFromCart(${item.id})"
+                    class="text-red-500 hover:text-red-700 ml-3 transition-all duration-200">&times;</button>
+        </div>`;
     });
+
+    // Update Total Harga di Cart Drawer
     document.getElementById(
       "cartDrawerTotal"
     ).innerText = `Rp${total.toLocaleString()}`;
@@ -356,7 +505,7 @@
   categories.forEach((cat, idx) => {
     const btn = document.createElement("button");
     btn.className =
-      "px-4 py-2 rounded-lg font-semibold text-gray-700 hover:bg-blue-100 focus:bg-blue-200 focus:outline-none transition uppercase";
+      "px-4 py-2 rounded-lg font-semibold text-primary focus:bg-blue-200 focus:outline-none transition uppercase";
     btn.textContent = cat;
     btn.setAttribute("data-category", cat);
     btn.onclick = function () {
@@ -375,34 +524,41 @@
     section.id = sectionId;
     section.className = "mb-10";
     section.innerHTML = `
-      <h2 class="text-2xl font-bold text-gray-800 mb-4 capitalize">${cat}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <h2 class="text-2xl font-bold text-primary mb-4 capitalize">${cat}</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         ${products
           .filter((p) => p.category === cat)
           .map(
             (product) => `
-          <div class=\"bg-white rounded-lg shadow-lg overflow-hidden flex flex-col\">
-            <div class=\"px-4 py-2 flex-1\">
-              <h1 class=\"text-lg font-bold text-gray-800 uppercase\">${
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col order-card" data-id="${
+            product.id
+          }" data-category="${product.category}">
+            <div class="relative">
+              <img class="object-cover w-full h-36 mt-2 rounded-md" src="${
+                product.image
+              }" alt="${product.name}" />
+              <span id="qty-badge-${
+                product.id
+              }" class="qty-badge absolute top-4 right-2 px-3 py-2 rounded-full bg-accent text-white font-bold text-xs align-middle hidden"></span>
+            </div>
+            <div class="px-4 py-2 flex-1">
+              <h1 class="text-lg font-bold text-secondary uppercase">${
                 product.name
               }</h1>
-              <p class=\"mt-1 text-sm text-gray-600\">${product.description.slice(
+              <p class="mt-1 text-sm text-gray-600">${product.description.slice(
                 0,
                 60
               )}..</p>
             </div>
-            <img class=\"object-cover w-full h-36 mt-2 rounded-md\" src=\"${
-              product.image
-            }\" alt=\"${product.name}\" />
-            <div class=\"flex items-center justify-between px-4 py-2 bg-gray-900\">
-              <h1 class=\"text-lg font-bold text-white\">Rp ${product.price.toLocaleString()}</h1>
-              <button onclick=\"addToCart('${
+            <div class="flex items-center justify-between px-4 py-2 bg-secondary">
+              <h1 class="text-lg font-bold text-white">Rp ${product.price.toLocaleString()}</h1>
+              <button onclick="addToCart('${
                 product.id
               }', '${product.name.replace(/'/g, "\\'")}', '${
               product.price
             }', '${
               product.image
-            }')\" class=\"px-2 py-1 text-xs font-semibold text-gray-900 uppercase bg-white rounded hover:bg-gray-200 focus:bg-gray-400 transition duration-300\">Tambah</button>
+            }')" class="px-2 py-1 text-xs font-semibold text-black hover:bg-accent hover:text-accent uppercase bg-white rounded transition duration-300">Tambah</button>
             </div>
           </div>
         `
@@ -413,53 +569,195 @@
     allProductSections.appendChild(section);
   });
 
-  // --- STICKY NAVBAR DAN KATEGORI BAR ---
-  const navbar = document.querySelector("nav");
-  const categoryBarWrapper = document.getElementById("categoryBarWrapper");
-  const hero = document.getElementById("hero");
-  let navPadX = 0;
-  window.addEventListener("DOMContentLoaded", () => {
-    // Samakan padding kiri-kanan categoryBarWrapper dengan navbar utama
-    const navContainer = navbar.querySelector(".container");
-    if (navContainer) {
-      const style = getComputedStyle(navContainer);
-      categoryBarWrapper.style.paddingLeft = style.paddingLeft;
-      categoryBarWrapper.style.paddingRight = style.paddingRight;
-    }
-  });
-  window.addEventListener("scroll", function () {
-    // Navbar selalu sticky (cukup pakai class sticky di nav)
-    // CategoryBarWrapper sticky di bawah navbar setelah discroll melewati hero
-    const navHeight = navbar.offsetHeight;
-    const categoryBarTop = categoryBarWrapper.offsetTop;
-    if (window.scrollY + navHeight >= categoryBarTop) {
-      categoryBarWrapper.classList.add(
-        "fixed",
-        "top-0",
-        "left-0",
-        "right-0",
-        "shadow-md"
-      );
-      categoryBarWrapper.style.zIndex = 39;
-      categoryBarWrapper.style.marginTop = navHeight + "px";
-    } else {
-      categoryBarWrapper.classList.remove(
-        "fixed",
-        "top-0",
-        "left-0",
-        "right-0",
-        "shadow-md"
-      );
-      categoryBarWrapper.style.zIndex = "";
-      categoryBarWrapper.style.marginTop = "";
-    }
-  });
+  function renderProductQtyBadges() {
+    products.forEach((product) => {
+      const badge = document.getElementById(`qty-badge-${product.id}`);
+      if (badge) {
+        const item = cart.find((i) => i.id === product.id);
+        if (item && item.qty > 0) {
+          badge.textContent = item.qty;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+    });
+  }
 
   function openCheckoutModal() {
     // Simpan cart ke localStorage dan redirect ke halaman checkout baru
     localStorage.setItem("customer_cart", JSON.stringify(cart));
     window.location.href = "/customer/checkout/";
   }
+
+  // Drawer History Logic
+  const historyDrawerBtn = document.getElementById("historyDrawerBtn");
+  const historyDrawer = document.getElementById("historyDrawer");
+  const historyDrawerOverlay = document.getElementById("historyDrawerOverlay");
+  const closeHistoryDrawer = document.getElementById("closeHistoryDrawer");
+  function openHistoryDrawer() {
+    historyDrawer.classList.remove("translate-x-full");
+    historyDrawerOverlay.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    fetchOrderHistory();
+  }
+  function closeHistoryDrawerFn() {
+    historyDrawer.classList.add("translate-x-full");
+    historyDrawerOverlay.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  }
+  historyDrawerBtn.addEventListener("click", openHistoryDrawer);
+  closeHistoryDrawer.addEventListener("click", closeHistoryDrawerFn);
+  historyDrawerOverlay.addEventListener("click", closeHistoryDrawerFn);
+
+  // Fetch order history via AJAX
+  function fetchOrderHistory() {
+    const el = document.getElementById("historyDrawerItems");
+    el.innerHTML =
+      '<div class="text-center text-gray-400" id="historyLoading">Memuat riwayat...</div>';
+    fetch("/customer/order/history/")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.orders && data.orders.length) {
+          el.innerHTML = data.orders
+            .map(
+              (order) => `
+            <div class=\"rounded-lg p-3 mb-2 shadow:lg hover:shadow-md transition cursor-pointer bg-bg\" onclick=\"showOrderDetail(${
+              order.id
+            })\">
+              <div class=\"flex justify-between items-center mb-1\">
+                <span class=\"font-semibold text-primary\">#${order.id}</span>
+                <span class=\"text-xs px-2 py-1 rounded bg-secondary text-white\">${
+                  order.status
+                }</span>
+              </div>
+              <div class=\"text-xs text-primary/70\">${order.created_at}</div>
+              <div class=\"text-sm text-primary/90\">Total: <b class=\"text-accent\">Rp${order.total_price.toLocaleString()}</b></div>
+            </div>
+          `
+            )
+            .join("");
+        } else {
+          el.innerHTML =
+            '<div class="text-center text-gray-400">Belum ada riwayat pesanan.</div>';
+        }
+      })
+      .catch(() => {
+        el.innerHTML =
+          '<div class="text-center text-status">Gagal memuat riwayat.</div>';
+      });
+  }
+  // Show order detail modal
+  function showOrderDetail(orderId) {
+    fetch(`/customer/order/history/${orderId}/`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.order) {
+          const order = data.order;
+          document.getElementById("orderDetailContent").innerHTML = `
+          <h3 class=\"text-xl font-bold text-primary mb-2\">Order #${
+            order.id
+          }</h3>
+          <div class=\"mb-2 text-secondary\">${order.created_at}</div>
+          <div class=\"mb-4\">
+            <div class=\"font-semibold mb-1\">Item Dipesan:</div>
+            <ul class=\"space-y-1\">
+              ${order.items
+                .map(
+                  (item) => `
+                    <li class=\"flex justify-between\">
+                      <span>${
+                        item.name
+                      } <span class=\"text-xs text-primary/60\">x${
+                    item.qty
+                  }</span></span>
+                      <span class=\"text-primary\">Rp${item.price.toLocaleString()}</span>
+                    </li>
+                  `
+                )
+                .join("")}
+            </ul>
+          </div>
+          <div class=\"flex justify-between items-center mb-2\">
+            <span class=\"font-semibold\">Total:</span>
+            <span class=\"font-bold text-accent text-lg\">Rp${order.total_price.toLocaleString()}</span>
+          </div>
+          <div class=\"flex justify-between items-center\">
+            <span class=\"font-semibold\">Status:</span>
+            <span class=\"px-2 py-1 rounded bg-secondary text-white\">${
+              order.status
+            }</span>
+          </div>
+        `;
+          document
+            .getElementById("orderDetailModal")
+            .classList.remove("hidden");
+        }
+      });
+  }
+  function closeOrderDetailModal() {
+    document.getElementById("orderDetailModal").classList.add("hidden");
+  }
+
+  const profileBtn = document.getElementById("profileBtn");
+  const profileModal = document.getElementById("profileModal");
+  const profileNameInput = document.getElementById("profileNameInput");
+  const profileForm = document.getElementById("profileForm");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  function openProfileModal() {
+    profileModal.classList.remove("hidden");
+    profileModal.classList.add("flex");
+    fetch("/customer/order/")
+      .then((res) => res.text())
+      .then((html) => {
+        // Ambil nama dari template context (atau sesi via AJAX jika perlu)
+        const match = html.match(/"customer_name":\s*"([^"]*)"/);
+        let name = match ? match[1] : "";
+        if (!name) {
+          // fallback: coba ambil dari elemen navbar jika ada
+          name =
+            document.getElementById("navbarCustomerName")?.textContent || "";
+        }
+        profileNameInput.value = name;
+      });
+  }
+  function closeProfileModal() {
+    profileModal.classList.add("hidden");
+    profileModal.classList.remove("flex");
+  }
+  profileBtn.addEventListener("click", openProfileModal);
+
+  profileForm.onsubmit = function (e) {
+    e.preventDefault();
+    const name = profileNameInput.value.trim();
+    if (!name) return;
+    fetch("/customer/profile/update-name/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          // Update nama di navbar jika ada
+          const navName = document.getElementById("navbarCustomerName");
+          if (navName) navName.textContent = name;
+          closeProfileModal();
+        } else {
+          alert(data.error || "Gagal update nama");
+        }
+      });
+  };
+  logoutBtn.onclick = function () {
+    fetch("/customer/logout/", { method: "POST" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.href = "/customer/login/";
+        }
+      });
+  };
 </script>
 <script
   src="https://app.sandbox.midtrans.com/snap/snap.js"
