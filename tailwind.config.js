@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
+        yusei: ["Yusei Magic", "sans-serif"],
       },
       colors: {
         primary: "var(--color-primary)",

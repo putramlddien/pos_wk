@@ -421,6 +421,7 @@ def kasir_owner_logout(request):
     logout(request)
     return redirect('kasir_owner_login')
 
+@csrf_exempt
 @login_required
 @role_required(allowed_roles=['kasir', 'owner'])
 def pay_cash(request, order_id):
@@ -429,9 +430,8 @@ def pay_cash(request, order_id):
             order = Order.objects.get(id=order_id)
             if order.status not in ['Completed', 'Cancelled']:
                 order.payment_status = 'Paid'
-                order.status = 'Completed'
+                order.status = 'Processing'  # Set to Processing for cash
                 order.save()
-                # Simpan ke Payment jika perlu
                 Payment.objects.create(order=order, payment_method='Cash', payment_status='Paid', amount=order.total_price)
                 return JsonResponse({'success': True, 'message': 'Order telah dibayar.'})
             else:

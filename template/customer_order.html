@@ -1,4 +1,4 @@
-{% extends "base_customer.html" %} {% block content %}
+{% extends "base_customer.html" %} {% block content %} {% load static %}
 <!-- Require css -->
 <script src="//unpkg.com/alpinejs" defer></script>
 <nav
@@ -9,12 +9,15 @@
     class="container px-6 py-4 mx-auto md:flex md:justify-between md:items-center"
   >
     <div class="flex items-center justify-between">
-      <a href="#">
+      <a href="/" class="flex items-center gap-3">
         <img
-          class="w-auto h-6 sm:h-7"
-          src="https://merakiui.com/images/full-logo.svg"
-          alt=""
+          class="w-auto h-11 sm:h-9"
+          src="{% static 'logo_warpul.png' %}"
+          alt="Logo Warung Kumpul"
         />
+        <span class="text-primary font-yusei text-lg sm:text-xl tracking-wide"
+          >Warung Kumpul</span
+        >
       </a>
 
       <!-- Mobile menu button -->
