@@ -35,7 +35,7 @@
     {% for order in orders %}
     <div class="bg-white rounded-xl shadow-lg p-4 cursor-pointer hover:ring-2 hover:ring-accent transition order-card" onclick="openOrderModal({{ order.id }})" id="order-card-{{ order.id }}">
       <div class="mb-2 flex justify-between items-center">
-        <span class="font-semibold text-secondary">{{ order.notes|default:'-' }}</span>
+        <span class="font-semibold text-secondary">{{ order.customer_name|default:'-' }}</span>
         <span class="text-xs px-2 py-1 rounded bg-secondary text-white">{{ order.table.table_number|default:'Takeaway' }}</span>
       </div>
       <div class="text-secondary text-sm mb-2">Order ID: #{{ order.id }}</div>
@@ -83,7 +83,7 @@
           itemsHtml += `<li class='flex justify-between mb-1'><span>${item.product_name} x${item.quantity}</span><span>Rp${item.price.toLocaleString()}</span></li>`;
         });
         document.getElementById('modalContent').innerHTML = `
-          <div class='mb-2'><b>Customer:</b> ${order.customer}</div>
+          <div class='mb-2'><b>Customer:</b> ${order.customer_name}</div>
           <div class='mb-2'><b>Meja:</b> ${order.table || 'Takeaway'}</div>
           <div class='mb-2'><b>Total:</b> Rp${order.total_price.toLocaleString()}</div>
           <div class='mb-2'><b>Pembayaran:</b> ${order.payment_method}</div>

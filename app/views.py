@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 import requests
 import logging
 from .models import Table, CustomerOTPSession
+from django.views.decorators.http import require_POST
 from django.conf import settings
 import os
 import random
@@ -181,7 +182,7 @@ def create_order(request):
             total_price=total,
             status='Processing',
             table=table_obj,
-            notes=customer_name,
+            customer_name=customer_name,
             source='manual',
             payment_status='Pending',  # Ganti dari 'Unpaid' ke 'Pending'
         )
@@ -202,7 +203,6 @@ def create_order(request):
 @role_required(allowed_roles=['kasir', 'owner'])
 def order_list(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('order_id'):
-        # AJAX detail order
         order_id = request.GET.get('order_id')
         try:
             order = Order.objects.select_related('table', 'kasir').prefetch_related('order_details__product').get(id=order_id)
@@ -213,15 +213,21 @@ def order_list(request):
                     'price': float(od.price)
                 } for od in order.order_details.all()
             ]
+            # Cek apakah order by kasir atau by customer
+            by_kasir = True if order.kasir else False
+            # Pastikan payment status
+            is_paid = order.payment_status.lower() == 'paid'
             return JsonResponse({
                 'order': {
                     'id': order.id,
-                    'customer': order.notes or '-',
+                    'customer_name': order.customer_name or '-',
                     'table': order.table.table_number if order.table else 'Takeaway',
                     'total_price': float(order.total_price),
                     'payment_method': order.payment_status if order.payment_status else '-',
                     'kasir': order.kasir.username if order.kasir else '-',
-                    'items': items
+                    'items': items,
+                    'by_kasir': by_kasir,
+                    'is_paid': is_paid
                 }
             })
         except Order.DoesNotExist:
@@ -229,17 +235,18 @@ def order_list(request):
     orders = Order.objects.filter(status='Processing').select_related('table', 'kasir').prefetch_related('order_details__product')
     return render(request, 'order_list.html', {'orders': orders})
 
+
 @csrf_exempt
 @login_required
 @role_required(allowed_roles=['kasir', 'owner'])
 def complete_order(request):
     if request.method == 'POST':
-        import json
         data = json.loads(request.body)
         order_id = data.get('order_id')
         try:
             order = Order.objects.get(id=order_id)
             order.status = 'Completed'
+            order.kasir = request.user
             order.save()
             return JsonResponse({'success': True})
         except Order.DoesNotExist:
@@ -439,6 +446,34 @@ def pay_cash(request, order_id):
         except Order.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Order tidak ditemukan.'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+@csrf_exempt
+@login_required
+@role_required(allowed_roles=['kasir', 'owner'])
+def confirm_cash_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    # Hanya boleh confirm cash jika order dari customer dan belum paid
+    if not order.kasir and order.payment_status.lower() != 'paid':
+        order.payment_status = 'Paid'
+        order.kasir = request.user
+        order.save()
+        # Optional: buat Payment record atau update
+        payment, created = Payment.objects.get_or_create(
+            order=order,
+            defaults={
+                'payment_method': 'Cash',
+                'payment_status': 'Paid',
+                'amount': order.total_price  # Pastikan nama field-nya sesuai model
+            }
+        )
+        if not created:
+            payment.payment_method = 'Cash'
+            payment.payment_status = 'Paid'
+            payment.amount = order.total_price
+            payment.save()
+
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
 
 @login_required
 @role_required(allowed_roles=['owner', 'kasir'])
